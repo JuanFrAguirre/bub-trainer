@@ -2,6 +2,9 @@
 import { prisma } from '@/lib/prisma';
 
 export async function getExercises() {
-  const exercises = await prisma.exercise.findMany();
-  return exercises;
+  return await prisma.exercise.findMany();
+}
+
+export async function createExercise(name: string) {
+  return await prisma.exercise.create({ data: { name } });
 }

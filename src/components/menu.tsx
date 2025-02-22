@@ -10,6 +10,8 @@ const links = [
   { path: '/workouts', text: 'Entrenos' },
   { path: '/templates', text: 'Plantillas' },
   { path: '/templates/new', text: 'Crear plantilla' },
+  { path: '/exercises', text: 'Ejercicios' },
+
   { path: '/logs', text: 'Registros' },
 ];
 

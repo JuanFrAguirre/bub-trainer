@@ -149,6 +149,16 @@ const TemplateWorkoutItem: FC<Props> = ({ workout }) => {
     populateExercisePool();
   }, []);
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isNewExerciseModalOpen) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+    }
+  }, [isNewExerciseModalOpen]);
+
   return (
     <>
       <li className="p-4 border rounded border-white/25 flex">
@@ -368,14 +378,11 @@ const TemplateWorkoutItem: FC<Props> = ({ workout }) => {
                 </div>
 
                 {/* Submit Button */}
-                <button
-                  className="bg-white text-black px-3 py-1 rounded w-full"
-                  type="submit"
-                >
+                <button className="primary" type="submit">
                   Guardar cambios
                 </button>
                 <button
-                  className="bg-white text-black px-3 py-1 rounded w-full"
+                  className="secondary"
                   type="button"
                   onClick={handleCancelEdit}
                 >
@@ -430,6 +437,7 @@ const TemplateWorkoutItem: FC<Props> = ({ workout }) => {
                   <small>Nombre del ejercicio</small>
                 </label>
                 <input
+                  ref={inputRef}
                   className="bg-black border border-white rounded p-2"
                   type="text"
                   name="exerciseName"

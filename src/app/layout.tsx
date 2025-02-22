@@ -35,7 +35,7 @@ export default function RootLayout({
       <body
         className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="mt-16 px-5 mx-auto max-w-screen-xl">{children}</div>
+        <div className="my-16 px-5 mx-auto max-w-screen-xl">{children}</div>
         <Header />
         <PortalRoot />
       </body>

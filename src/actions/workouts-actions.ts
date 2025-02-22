@@ -15,6 +15,13 @@ export async function getTemplateWorkouts() {
   return workouts.sort((a, b) => a.workoutDay - b.workoutDay);
 }
 
+export async function getTemplateWorkout(id: string) {
+  return await prisma.workoutTemplate.findFirst({
+    where: { id },
+    include: { exercises: { include: { exercise: true } } },
+  });
+}
+
 // Create a seed workout with predefined exercises
 export async function createSeedWorkout() {
   return await Promise.all(

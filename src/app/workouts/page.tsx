@@ -3,7 +3,8 @@ import {
   getTemplateWorkouts,
 } from '@/actions/workouts-actions';
 import { revalidatePath } from 'next/cache';
-import { FaDumbbell } from 'react-icons/fa';
+import Link from 'next/link';
+import { FaDumbbell } from 'react-icons/fa6';
 
 export default async function Home() {
   const workouts = await getTemplateWorkouts();
@@ -48,10 +49,13 @@ export default async function Home() {
                       </div>
                     ))}
                   </ul>
-                  <button className="p-1 text-base border-none primary flex flex-col items-center self-end">
-                    Entrenar
+                  <Link
+                    href={'/workouts/' + workout.id}
+                    className="btn !px-1.5 text-base primary flex flex-col items-center self-end"
+                  >
+                    <small>Entrenar</small>
                     <FaDumbbell />
-                  </button>
+                  </Link>
                 </div>
               </li>
             ))}

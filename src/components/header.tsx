@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FaDumbbell } from 'react-icons/fa';
+import { FaDumbbell } from 'react-icons/fa6';
 import Menu from './menu';
 
 const Header = () => {
