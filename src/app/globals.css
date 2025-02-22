@@ -19,3 +19,22 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+button {
+  @apply px-3 py-1 font-bold text-lg rounded border;
+}
+
+input,
+select {
+  @apply px-2 py-1;
+}
+
+.primary {
+  @apply text-black bg-white border-white;
+}
+.secondary {
+  @apply bg-white/10 border-white border;
+}
+.tertiary {
+  @apply bg-white/25 border-transparent;
+}

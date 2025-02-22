@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Exercise (Holds unique exercise descriptions)
+model Exercise {
+  id        String             @id @default(uuid())
+  name      String             @unique() // "Bench Press", "Squats", etc.
+  templates ExerciseTemplate[] // Links to predefined workout templates
+  logs      ExerciseLog[] // Links to logged workout sessions
+}
+
+// Workout Template (Predefined 4-day workouts)
+model WorkoutTemplate {
+  id             String             @id @default(uuid())
+  workoutDay     Int // 1 to 4
+  workoutName    String // name of the workout
+  exercises      ExerciseTemplate[]
+  createdAt      DateTime           @default(now())
+  WorkoutSession WorkoutSession[]
+}
+
+// Exercise Template (Predefined exercises per workout)
+model ExerciseTemplate {
+  id                String          @id @default(uuid())
+  workout           WorkoutTemplate @relation(fields: [workoutTemplateId], references: [id], onDelete: Cascade)
+  workoutTemplateId String
+  exercise          Exercise        @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  exerciseId        String
+  sets              Int
+  repetitions       Int
+  weight            String          @default("") // Suggested weight
+  rest              Int             @default(60) // Default rest time
+  ExerciseLog       ExerciseLog[]
+}
+
+// Workout Session (Logged when user does a workout)
+model WorkoutSession {
+  id          String          @id @default(uuid())
+  template    WorkoutTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  templateId  String
+  date        String
+  exercises   ExerciseLog[]
+  isCompleted Boolean         @default(false) // Mark if the workout was fully completed
+  createdAt   DateTime        @default(now())
+}
+
+// Exercise Log (Tracks the actual values when logging a session)
+model ExerciseLog {
+  id                 String           @id @default(uuid())
+  workoutSession     WorkoutSession   @relation(fields: [workoutSessionId], references: [id], onDelete: Cascade)
+  workoutSessionId   String
+  exerciseTemplate   ExerciseTemplate @relation(fields: [exerciseTemplateId], references: [id], onDelete: Cascade)
+  exerciseTemplateId String
+  exercise           Exercise         @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  exerciseId         String
+  sets               Int
+  repetitions        Int
+  weight             String
+  rest               Int
+}
