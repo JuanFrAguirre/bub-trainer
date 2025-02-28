@@ -79,8 +79,8 @@ export default function TestWorkoutLogger() {
     async (id: string) => {
       try {
         const isConfirmed = await confirm({
-          title: 'Eliminar ejercicio',
-          message: '¿Estás seguro de que deseas eliminar este ejercicio?',
+          title: 'Eliminar sesión',
+          message: '¿Estás seguro de que deseas eliminar esta sesión?',
           confirmText: 'Eliminar',
           cancelText: 'Cancelar',
         });
