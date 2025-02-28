@@ -1,4 +1,4 @@
-import { getTemplateWorkouts } from '@/actions/workouts-actions';
+import { getTemplateWorkouts } from '@/actions/workout-templates-actions';
 import TemplateWorkoutItem from './templateWorkoutItem';
 
 export default async function Templates() {

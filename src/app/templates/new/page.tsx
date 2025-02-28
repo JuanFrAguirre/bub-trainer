@@ -1,6 +1,6 @@
 'use client';
 
-import { createWorkoutTemplate } from '@/actions/workouts-actions';
+import { createWorkoutTemplate } from '@/actions/workout-templates-actions';
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';

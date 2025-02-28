@@ -65,26 +65,77 @@ export async function updateWorkoutTemplate(
   id: string,
   workoutData: {
     workoutDay: number;
+    workoutName: string;
     exercises: {
+      // For existing exercises, include the id.
+      id?: string;
       name: string;
       sets: number;
       repetitions: number;
       weight: string;
       rest: number;
+      remove?: boolean; // Flag to indicate removal
     }[];
   },
 ) {
-  return await prisma.workoutTemplate.update({
+  // First update the workout template fields.
+  const updatedTemplate = await prisma.workoutTemplate.update({
     where: { id },
     data: {
       workoutDay: workoutData.workoutDay,
-      exercises: {
-        deleteMany: {}, // Remove existing exercises
-        create: await mapExercises(workoutData.exercises),
-      },
+      workoutName: workoutData.workoutName,
     },
-    include: { exercises: { include: { exercise: true } } },
   });
+
+  // Process each exercise.
+  const processedExercises = await Promise.all(
+    workoutData.exercises.map(async (exercise) => {
+      if (exercise.id) {
+        // If the exercise should be removed, mark it inactive.
+        if (exercise.remove) {
+          return await prisma.exerciseTemplate.update({
+            where: { id: exercise.id },
+            data: { isActive: false },
+          });
+        } else {
+          // Otherwise, update the fields.
+          return await prisma.exerciseTemplate.update({
+            where: { id: exercise.id },
+            data: {
+              sets: exercise.sets,
+              repetitions: exercise.repetitions,
+              weight: exercise.weight,
+              rest: exercise.rest,
+              isActive: true, // ensure it's active
+            },
+          });
+        }
+      } else {
+        // For new exercises, create them.
+        let existingExercise = await prisma.exercise.findUnique({
+          where: { name: exercise.name },
+        });
+        if (!existingExercise) {
+          existingExercise = await prisma.exercise.create({
+            data: { name: exercise.name },
+          });
+        }
+        return await prisma.exerciseTemplate.create({
+          data: {
+            workoutTemplateId: id,
+            exerciseId: existingExercise.id,
+            sets: exercise.sets,
+            repetitions: exercise.repetitions,
+            weight: exercise.weight,
+            rest: exercise.rest,
+            isActive: true,
+          },
+        });
+      }
+    }),
+  );
+
+  return { updatedTemplate, processedExercises };
 }
 
 // Delete a workout template

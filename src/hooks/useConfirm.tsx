@@ -40,14 +40,12 @@ export function useConfirm(): {
         <Modal isOpen={confirmState.isOpen} onClose={() => handleClose(false)}>
           <div className="p-4 text-center flex flex-col justify-between bg-red-400">
             <h2 className="text-xl font-bold">
-              {confirmState.options.title || 'Confirm'}
+              {confirmState.options.title || 'Confirmar'}
             </h2>
-            <p className="my-4">
-              {confirmState.options.message || 'Are you sure?'}
-            </p>
+            <p className="my-4">{confirmState.options.message || ''}</p>
             <div className="flex justify-center gap-4 mt-4">
               <button className="secondary" onClick={() => handleClose(false)}>
-                {confirmState.options.cancelText || 'Cancel'}
+                {confirmState.options.cancelText || 'Cancelar'}
               </button>
               <button
                 className="bg-white text-black px-3 py-1 rounded"

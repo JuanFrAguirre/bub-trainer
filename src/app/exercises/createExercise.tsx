@@ -1,11 +1,16 @@
 'use client';
+import { createExercise } from '@/actions/exercise-actions';
+import LoadingSpinner from '@/components/loading';
 import Modal from '@/components/modal';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
 
 const CreateExercise = () => {
   const [isNewExerciseModalOpen, setIsNewExerciseModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (isNewExerciseModalOpen) {
@@ -17,6 +22,7 @@ const CreateExercise = () => {
 
   return (
     <div className="absolute top-0 right-0">
+      <LoadingSpinner isLoading={isLoading} />
       <button className="p-2" onClick={() => setIsNewExerciseModalOpen(true)}>
         <FaPlus />
       </button>
@@ -31,6 +37,7 @@ const CreateExercise = () => {
             </h2>
             <form
               onSubmit={async (e) => {
+                setIsLoading(true);
                 e.preventDefault();
                 const formData = new FormData(e.target as HTMLFormElement);
                 const newExerciseName = formData.get('exerciseName') as string;
@@ -39,6 +46,9 @@ const CreateExercise = () => {
 
                 // Close the modal
                 setIsNewExerciseModalOpen(false);
+                await createExercise(newExerciseName);
+                setIsLoading(false);
+                router.refresh();
               }}
               className="flex flex-col gap-4"
             >

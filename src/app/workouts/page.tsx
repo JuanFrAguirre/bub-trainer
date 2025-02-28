@@ -1,34 +1,21 @@
-import {
-  createSeedWorkout,
-  getTemplateWorkouts,
-} from '@/actions/workouts-actions';
-import { revalidatePath } from 'next/cache';
+import { getTemplateWorkouts } from '@/actions/workout-templates-actions';
 import Link from 'next/link';
 import { FaDumbbell } from 'react-icons/fa6';
 
 export default async function Home() {
   const workouts = await getTemplateWorkouts();
 
-  const handleSeed = async () => {
-    'use server';
-    await createSeedWorkout();
-    revalidatePath('/');
-  };
-
   return (
     <>
       <main>
         <div className="flex flex-col">
-          <form action={handleSeed}>
-            <button>Seed</button>
-          </form>
           <ul className="flex flex-col gap-4 p-4">
             {workouts.map((workout) => (
               <li
                 key={workout.id}
                 className="p-4 border rounded border-white/25 flex flex-col"
               >
-                <p className="text-xl font-bold text-center mb-2 border-b-2 pb-2 border-b-fuchsia-600">
+                <p className="text-xl font-bold text-center mb-4 border-b-2 pb-2 border-b-fuchsia-600">
                   Día {workout.workoutDay} | {workout.workoutName}
                 </p>
                 <div className="flex">

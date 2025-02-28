@@ -4,7 +4,7 @@ import { getExercises } from '@/actions/exercise-actions';
 import {
   deleteWorkoutTemplate,
   updateWorkoutTemplate,
-} from '@/actions/workouts-actions';
+} from '@/actions/workout-templates-actions';
 import Modal from '@/components/modal';
 import { useConfirm } from '@/hooks/useConfirm';
 import clsx from 'clsx';
@@ -124,6 +124,7 @@ const TemplateWorkoutItem: FC<Props> = ({ workout }) => {
       const updatedWorkout = {
         id: workout.id,
         workoutDay: Number(workoutDay),
+        workoutName: workout.workoutName, // Added property
         exercises: exercises.map((exercise) => ({
           ...exercise,
           sets: Number(exercise.sets),
@@ -138,7 +139,7 @@ const TemplateWorkoutItem: FC<Props> = ({ workout }) => {
       await updateWorkoutTemplate(updatedWorkout.id, updatedWorkout);
       router.refresh();
     },
-    [workout.id, workoutDay, exercises, router],
+    [workout.id, workout.workoutName, workoutDay, exercises, router],
   );
 
   useEffect(() => {

@@ -2,6 +2,22 @@ import Link from 'next/link';
 import { FaDumbbell } from 'react-icons/fa6';
 import Menu from './menu';
 
+const links = [
+  { path: '/workouts', text: 'Home' },
+  // { path: '/workouts', text: 'Entrenos' },
+  { path: '/templates', text: 'Plantillas' },
+  { path: '/templates/new', text: 'Crear plantilla' },
+  { path: '/exercises', text: 'Ejercicios' },
+  { path: '/logs', text: 'Registros' },
+];
+
+const prodLinks = [
+  { path: '/workouts', text: 'Home' },
+  // { path: '/workouts', text: 'Entrenos' },
+  { path: '/exercises', text: 'Ejercicios' },
+  { path: '/logs', text: 'Registros' },
+];
+
 const Header = () => {
   return (
     <header className="py-2 border-b-fuchsia-600 border-b-[2px] fixed top-0 left-0 right-0 bg-black">
@@ -19,7 +35,11 @@ const Header = () => {
           </Link>
         </nav>
         <div className="md:hidden">
-          <Menu />
+          <Menu
+            links={
+              process.env.ENVIRONMENT === 'development' ? links : prodLinks
+            }
+          />
         </div>
       </div>
     </header>

@@ -2,20 +2,17 @@
 import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { IoMenuSharp } from 'react-icons/io5';
 
-const links = [
-  { path: '/', text: 'Home' },
-  { path: '/workouts', text: 'Entrenos' },
-  { path: '/templates', text: 'Plantillas' },
-  { path: '/templates/new', text: 'Crear plantilla' },
-  { path: '/exercises', text: 'Ejercicios' },
+interface Props {
+  links: {
+    text: string;
+    path: string;
+  }[];
+}
 
-  { path: '/logs', text: 'Registros' },
-];
-
-const Menu = () => {
+const Menu: FC<Props> = ({ links }) => {
   const [menuIsShown, setMenuIsShown] = useState(false);
   const path = usePathname();
 

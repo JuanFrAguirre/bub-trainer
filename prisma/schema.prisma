@@ -34,8 +34,9 @@ model ExerciseTemplate {
   exerciseId        String
   sets              Int
   repetitions       Int
-  weight            String          @default("") // Suggested weight
-  rest              Int             @default(60) // Default rest time
+  weight            String          @default("")
+  rest              Int             @default(60)
+  isActive          Boolean         @default(true) // New field to indicate active status
   ExerciseLog       ExerciseLog[]
 }
 
@@ -59,8 +60,17 @@ model ExerciseLog {
   exerciseTemplateId String
   exercise           Exercise         @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
   exerciseId         String
-  sets               Int
-  repetitions        Int
-  weight             String
-  rest               Int
+  sets               Int              @default(0) // Number of sets performed
+  rest               Int              @default(60) // Default rest time
+  ExerciseSetLog     ExerciseSetLog[] // Tracks each individual set
+}
+
+// Exercise Set Log (Tracks each individual set within a logged session)
+model ExerciseSetLog {
+  id            String      @id @default(uuid())
+  exerciseLog   ExerciseLog @relation(fields: [exerciseLogId], references: [id], onDelete: Cascade)
+  exerciseLogId String
+  setNumber     Int // Order of the set (e.g., 1, 2, 3...)
+  repetitions   Int // Actual reps performed in this set
+  weight        String // Actual weight used in this set
 }
