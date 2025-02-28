@@ -12,7 +12,28 @@ interface Props {
   }[];
 }
 
-const Menu: FC<Props> = ({ links }) => {
+export const MenuDesktop: FC<Props> = ({ links }) => {
+  const path = usePathname();
+
+  return (
+    <nav className={'flex gap-2 max-md:hidden'}>
+      {links.map((link) => (
+        <Link
+          href={link.path}
+          className={clsx(
+            `font-medium hover:text-fuchsia-600`,
+            path === link.path && 'text-fuchsia-600',
+          )}
+          key={link.path}
+        >
+          {link.text}
+        </Link>
+      ))}
+    </nav>
+  );
+};
+
+export const Menu: FC<Props> = ({ links }) => {
   const [menuIsShown, setMenuIsShown] = useState(false);
   const path = usePathname();
 
@@ -66,5 +87,3 @@ const Menu: FC<Props> = ({ links }) => {
     </>
   );
 };
-
-export default Menu;

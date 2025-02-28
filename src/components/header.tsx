@@ -1,10 +1,9 @@
 import Link from 'next/link';
 import { FaDumbbell } from 'react-icons/fa6';
-import Menu from './menu';
+import { Menu, MenuDesktop } from './menu';
 
 const links = [
   { path: '/workouts', text: 'Home' },
-  // { path: '/workouts', text: 'Entrenos' },
   { path: '/templates', text: 'Plantillas' },
   { path: '/templates/new', text: 'Crear plantilla' },
   { path: '/exercises', text: 'Ejercicios' },
@@ -13,7 +12,6 @@ const links = [
 
 const prodLinks = [
   { path: '/workouts', text: 'Home' },
-  // { path: '/workouts', text: 'Entrenos' },
   { path: '/exercises', text: 'Ejercicios' },
   { path: '/logs', text: 'Registros' },
 ];
@@ -26,19 +24,9 @@ const Header = () => {
           <FaDumbbell className="text-2xl font-bold text-fuchsia-600" />
           <h1 className="text-xl font-bold">Bubs Trainer App</h1>
         </Link>
-        <nav className={'flex gap-2 max-md:hidden'}>
-          {[
-            ...(process.env.ENVIRONMENT === 'development' ? links : prodLinks),
-          ].map((link) => (
-            <Link
-              href={link.path}
-              className={`font-medium hover:text-fuchsia-600`}
-              key={link.path}
-            >
-              {link.text}
-            </Link>
-          ))}
-        </nav>
+        <MenuDesktop
+          links={process.env.ENVIRONMENT === 'development' ? links : prodLinks}
+        />
         <div className="md:hidden">
           <Menu
             links={
