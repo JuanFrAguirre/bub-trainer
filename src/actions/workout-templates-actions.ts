@@ -18,7 +18,12 @@ export async function getTemplateWorkouts() {
 export async function getTemplateWorkout(id: string) {
   return await prisma.workoutTemplate.findFirst({
     where: { id },
-    include: { exercises: { include: { exercise: true } } },
+    include: {
+      exercises: {
+        where: { isActive: true }, // Only include active exercises
+        include: { exercise: true },
+      },
+    },
   });
 }
 
@@ -67,18 +72,17 @@ export async function updateWorkoutTemplate(
     workoutDay: number;
     workoutName: string;
     exercises: {
-      // For existing exercises, include the id.
       id?: string;
       name: string;
       sets: number;
       repetitions: number;
       weight: string;
       rest: number;
-      remove?: boolean; // Flag to indicate removal
+      remove?: boolean; // Optional flag if you want to explicitly mark removal
     }[];
   },
 ) {
-  // First update the workout template fields.
+  // 1. Update the workout template fields.
   const updatedTemplate = await prisma.workoutTemplate.update({
     where: { id },
     data: {
@@ -87,51 +91,80 @@ export async function updateWorkoutTemplate(
     },
   });
 
-  // Process each exercise.
+  // 2. Get current active exercises for the template.
+  const currentActiveExercises = await prisma.exerciseTemplate.findMany({
+    where: { workoutTemplateId: id, isActive: true },
+  });
+
+  // 3. Build a set of exercise IDs that are present in the payload.
+  const payloadExerciseIds = new Set<string>();
+  for (const exercise of workoutData.exercises) {
+    if (exercise.id) {
+      payloadExerciseIds.add(exercise.id);
+    }
+  }
+
+  // 4. For each active exercise that isn't in the payload, mark it inactive.
+  const markMissingInactivePromises = currentActiveExercises
+    .filter((ex) => !payloadExerciseIds.has(ex.id))
+    .map((ex) =>
+      prisma.exerciseTemplate.update({
+        where: { id: ex.id },
+        data: { isActive: false },
+      }),
+    );
+  await Promise.all(markMissingInactivePromises);
+
+  // 5. Process each exercise in the payload.
   const processedExercises = await Promise.all(
     workoutData.exercises.map(async (exercise) => {
       if (exercise.id) {
-        // If the exercise should be removed, mark it inactive.
+        // If the exercise should be removed explicitly.
         if (exercise.remove) {
           return await prisma.exerciseTemplate.update({
             where: { id: exercise.id },
             data: { isActive: false },
           });
         } else {
-          // Otherwise, update the fields.
-          return await prisma.exerciseTemplate.update({
+          // Update existing record if found.
+          const existing = await prisma.exerciseTemplate.findUnique({
             where: { id: exercise.id },
-            data: {
-              sets: exercise.sets,
-              repetitions: exercise.repetitions,
-              weight: exercise.weight,
-              rest: exercise.rest,
-              isActive: true, // ensure it's active
-            },
           });
+          if (existing) {
+            return await prisma.exerciseTemplate.update({
+              where: { id: exercise.id },
+              data: {
+                sets: exercise.sets,
+                repetitions: exercise.repetitions,
+                weight: exercise.weight,
+                rest: exercise.rest,
+                isActive: true,
+              },
+            });
+          }
+          // If not found, fall back to creation.
         }
-      } else {
-        // For new exercises, create them.
-        let existingExercise = await prisma.exercise.findUnique({
-          where: { name: exercise.name },
-        });
-        if (!existingExercise) {
-          existingExercise = await prisma.exercise.create({
-            data: { name: exercise.name },
-          });
-        }
-        return await prisma.exerciseTemplate.create({
-          data: {
-            workoutTemplateId: id,
-            exerciseId: existingExercise.id,
-            sets: exercise.sets,
-            repetitions: exercise.repetitions,
-            weight: exercise.weight,
-            rest: exercise.rest,
-            isActive: true,
-          },
+      }
+      // For new exercises or if no ID is provided:
+      let existingExercise = await prisma.exercise.findUnique({
+        where: { name: exercise.name },
+      });
+      if (!existingExercise) {
+        existingExercise = await prisma.exercise.create({
+          data: { name: exercise.name },
         });
       }
+      return await prisma.exerciseTemplate.create({
+        data: {
+          workoutTemplateId: id,
+          exerciseId: existingExercise.id,
+          sets: exercise.sets,
+          repetitions: exercise.repetitions,
+          weight: exercise.weight,
+          rest: exercise.rest,
+          isActive: true,
+        },
+      });
     }),
   );
 
