@@ -114,7 +114,7 @@ export default function TestWorkoutLogger() {
           <h3 className="py-4 px-2 text-xl font-black text-center">
             Registros
           </h3>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
             {Array.isArray(sessions) ? (
               sessions.length > 0 ? (
                 sessions.map((session) => (
@@ -127,11 +127,11 @@ export default function TestWorkoutLogger() {
                         {session.template.workoutName}
                       </p>
                     </div>
-                    <div className="flex flex-wrap justify-between gap-y-3">
+                    <div className="flex flex-wrap justify-between gap-y-3 md:gap-y-6 md:px-4">
                       {session.exercises.map((exercise) => (
                         <div
                           key={exercise.id}
-                          className="p-2 border rounded basis-[48%] flex flex-col justify-between gap-2 items-center"
+                          className="p-2 border border-stone-50/15 rounded basis-[48%] flex flex-col justify-between gap-2 items-center md:p-6"
                         >
                           <div className="flex flex-col gap-2">
                             <p className="font-bold text-center text-lg">
