@@ -68,8 +68,6 @@ export default function TestWorkoutLogger() {
           },
         })),
       }));
-
-      console.log(formattedSessions);
       setSessions(formattedSessions);
     }
     setIsLoading(false);
