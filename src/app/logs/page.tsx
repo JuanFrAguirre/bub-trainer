@@ -131,10 +131,10 @@ export default function TestWorkoutLogger() {
                       {session.exercises.map((exercise) => (
                         <div
                           key={exercise.id}
-                          className="p-2 border border-stone-50/15 rounded basis-[48%] flex flex-col justify-between gap-2 items-center md:p-6"
+                          className="p-2 border border-stone-50/15 rounded basis-[48%] max-w-[48%] flex flex-col justify-between gap-2 items-center md:p-6 overflow-hidden"
                         >
                           <div className="flex flex-col gap-2">
-                            <p className="font-bold text-center text-lg">
+                            <p className="font-bold text-center text-lg overflow-hidden text-ellipsis line-clamp-2">
                               {exercise.exercise.name}
                             </p>
                             <p className="text-center">
@@ -181,7 +181,7 @@ export default function TestWorkoutLogger() {
                   </div>
                 ))
               ) : (
-                <div className="py-4 px-2 text-xl text-center font-black">
+                <div className="py-4 px-2 text-xl text-center font-black grow">
                   No hay sesiones registradas
                 </div>
               )

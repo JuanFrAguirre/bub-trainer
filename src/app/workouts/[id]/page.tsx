@@ -255,7 +255,7 @@ export default function NewWorkout() {
         />
       </div>
 
-      <ul className="space-y-4 p-3 border-b">
+      <ul className="flex flex-col gap-4 md:grid md:grid-cols-3 p-3 border-b">
         {workout.exercises.map((ex, i) => (
           <div
             key={ex.exerciseTemplateId}

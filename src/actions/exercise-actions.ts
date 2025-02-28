@@ -9,6 +9,13 @@ export async function createExercise(name: string) {
   return await prisma.exercise.create({ data: { name } });
 }
 
+export async function updateExercise(exerciseId: string, newName: string) {
+  return await prisma.exercise.update({
+    where: { id: exerciseId },
+    data: { name: newName },
+  });
+}
+
 export async function getExerciseLastSessionData(exerciseId: string) {
   // Find the most recent exercise log for this exercise,
   // ordering by the createdAt timestamp of the parent workout session.
