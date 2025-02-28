@@ -27,12 +27,17 @@ const Header = () => {
           <h1 className="text-xl font-bold">Bubs Trainer App</h1>
         </Link>
         <nav className={'flex gap-2 max-md:hidden'}>
-          <Link href={'/'} className="font-medium">
-            Entrenos
-          </Link>
-          <Link href={'/workouts'} className="font-medium">
-            Plantillas
-          </Link>
+          {[
+            ...(process.env.ENVIRONMENT === 'development' ? links : prodLinks),
+          ].map((link) => (
+            <Link
+              href={link.path}
+              className={`font-medium hover:text-fuchsia-600`}
+              key={link.path}
+            >
+              {link.text}
+            </Link>
+          ))}
         </nav>
         <div className="md:hidden">
           <Menu
